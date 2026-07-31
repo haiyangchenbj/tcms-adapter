@@ -1,10 +1,10 @@
 ---
 name: tcms-adapter
-version: "1.0.1"
+version: "1.1.0"
 description: |
-  For tech-product marketing teams — adapts a reviewed core draft into channel-specific versions (WeChat, dev community, CN social, EN X, LinkedIn, sales one-pager) and repurposes published content.
-  Never writes from scratch; that is tcms-writer's job. Keeps brand naming, data points, and customer redaction consistent across every channel version.
-  Not for neutral industry research distribution — use tcms-writer/tcms-compliance-reviewer for brand-side content.
+  Channel-adaptation agent. Adapts a reviewed core draft into channel-specific publish-ready versions.
+  Supports: official-account version, developer-community version, Chinese social post, English X post, LinkedIn summary, sales one-pager.
+  Also generates re-promotion material for existing content.
 read_when:
   - 适配
   - 改写
@@ -24,125 +24,131 @@ allowed-tools:
 disable: false
 ---
 
-# TCMS Adapter
+# Content Adapter
 
-将一篇已审核的核心稿（或已发布文章）适配为不同渠道所需的发布版本。不从零创作——那是content-writer的工作。
+Adapts a reviewed core draft (or published article) into the channel-specific versions needed for publishing. Does not create from scratch — that is `content-writer`'s job.
 
-## 两种模式
+## Two modes
 
-**模式A：新内容多渠道适配**
-输入：content-writer产出的核心稿
-输出：指定渠道的适配版本
+**Mode A: multi-channel adaptation of new content**
+Input: core draft from `content-writer`
+Output: adapted versions for specified channels
 
-**模式B：存量内容二次推广**
-输入：已发布文章的URL或本地文件
-输出：社交帖、观点摘要、数据点提取等轻量物料
+**Mode B: re-promotion of existing content**
+Input: URL or local file of a published article
+Output: lightweight material such as social posts, opinion summaries, data-point extractions
 
-模式B步骤：
-1. [确定性] 读取已发布文章
-2. [LLM] 提取3个可传播的信息点（最硬的数据/最尖锐的观点/最有画面感的场景）
-3. [LLM] 按目标渠道生成物料
-4. [LLM] 自检（数据与原文一致/产品名规范/无敏感信息）
-5. [确定性] 输出到 `content/adapted/repurpose/`
+Mode B steps:
+1. [deterministic] read the published article
+2. [LLM] extract 3 shareable information points (hardest data / sharpest opinion / most vivid scenario)
+3. [LLM] generate material per target channel
+4. [LLM] self-check (data consistent with original / product-name规范 / no sensitive info)
+5. [deterministic] output to `content/adapted/repurpose/`
 
 ---
 
-## Step 1: 确认输入和目标渠道 [确定性]
+## Step 1: Confirm input and target channels [deterministic]
 
-1. 确认核心稿路径（或已发布文章URL）
-2. 确认需要适配的渠道列表
-3. 读取核心稿内容
+1. Confirm the core-draft path (or published-article URL)
+2. Confirm the list of channels to adapt to
+3. Read the core-draft content
 
-未指定渠道时默认生成全套：公众号版 / 社区版 / 中文社交帖×2 / 英文X帖×1 / 销售一页纸（仅含案例或硬数据时）
+When no channel is specified, default to the full set: official-account version / community version / Chinese social post ×2 / English X post ×1 / sales one-pager (only when case or hard data is present)
 
-## Step 2: 读取渠道规范 [确定性]
+## Step 2: Read channel specs [deterministic]
 
-按需读取对应渠道的规范文件（`references/channel-specs/`目录下），同时读取品牌规范（复用content-writer的brand-rules.md）。
+Read the relevant channel-spec files on demand (`references/channel-specs/` directory), and read the brand guidelines (reuse `content-writer`'s `brand-rules.md`).
 
-## Step 3: 适配生成 [LLM]
+## Step 3: Adaptation generation [LLM]
 
-各渠道版本独立生成，互不依赖：
+Each channel version is generated independently, with no dependency between them:
 
-### 公众号版
-- 基于核心稿改写，降低技术细节，增加场景描述
-- 开头有场景化hook，结尾保持品牌结语
-- 1500-2500字
+### Official-account version
+- Rewrite based on the core draft; reduce technical detail, add scenario description
+- Scenario hook at the opening, fixed brand closing at the end
+- 1500-2500 words
 
-### 开发者社区版（确定性微调）
-- 核心稿本身是技术博客风格时 → **直接使用核心稿**
-- 只做格式微调，末尾可补延伸阅读链接
-- 不作为独立LLM任务
+### Developer-community version (deterministic fine-tune)
+- When the core draft is already in tech-blog style → **use the core draft directly**
+- Only minor formatting tweaks; may append further-reading links at the end
+- Not treated as a separate LLM task
 
-### 中文社交帖
-- 提取1个最有冲击力的数据点或场景
-- hook + 核心信息 + 话题标签，不超过300字
-- 每篇核心稿产出2条不同角度
+### Chinese social post
+- Extract 1 most impactful data point or scenario
+- hook + core message + topic hashtags, under 300 words
+- Produce 2 posts from different angles per core draft
 
-### 英文X帖
-- Thread格式（3-5条）或单条
-- 英文思维写作，不是中文翻译
-- 技术术语保留原文，每条≤280字符
+### English X post
+- Thread format (3-5 posts) or single post
+- Written with English thinking, not translated from Chinese
+- Keep technical terms in original; each post ≤280 characters
 
-### LinkedIn摘要
-- 面向管理层，偏商业价值
-- 200-300字，专业正式语气
+### LinkedIn summary
+- For management audience, leans business value
+- 200-300 words, professional formal tone
 
-### 销售一页纸
-- 仅当含客户案例或硬数据时生成
-- 客户挑战→方案→效果数据→适用场景，≤400字
+### Sales one-pager
+- Generated only when containing customer case or hard data
+- Customer challenge → solution → effect data → applicable scenario, ≤400 words
 
-## Step 4: 自检 [LLM]
+## Step 4: Self-check [LLM]
 
-- [ ] 字数限制
-- [ ] 关键数据点保留（不遗漏不编造）
-- [ ] 产品名称规范
-- [ ] 客户名称脱敏延续
-- [ ] 英文版避免中式英语
+- [ ] Word-count limit
+- [ ] Key data points preserved (no omission, no fabrication)
+- [ ] Product-name规范
+- [ ] Customer-name redaction carried through
+- [ ] English version avoids Chinglish
 
-## Step 5: 输出 [确定性]
+## Step 5: Output [deterministic]
 
 ```
 content/adapted/
-├── YYYY-MM-{主题}-wechat.md
-├── YYYY-MM-{主题}-community.md
-├── YYYY-MM-{主题}-social-cn-1.md
-├── YYYY-MM-{主题}-social-cn-2.md
-├── YYYY-MM-{主题}-x-en.md
-├── YYYY-MM-{主题}-linkedin.md     （如需）
-└── YYYY-MM-{主题}-one-pager.md    （如需）
+├── YYYY-MM-{topic}-wechat.md
+├── YYYY-MM-{topic}-community.md
+├── YYYY-MM-{topic}-social-cn-1.md
+├── YYYY-MM-{topic}-social-cn-2.md
+├── YYYY-MM-{topic}-x-en.md
+├── YYYY-MM-{topic}-linkedin.md     (if needed)
+└── YYYY-MM-{topic}-one-pager.md    (if needed)
 ```
 
-执行摘要：
+Execution summary:
 ```
-## 执行摘要
-- 核心稿：[文件名]（[字数]字）
-- 生成版本：公众号([字数]) / 社交帖中文×2 / 英文X×1 / ...
-- 未生成：[渠道名]（原因）
-- 数据点保留检查：[N]个全部保留 / [M]个因字数限制未包含
+## Execution summary
+- Core draft: [filename] ([word count] words)
+- Generated: official-account ([words]) / Chinese social ×2 / English X ×1 / ...
+- Not generated: [channel] (reason)
+- Data-point preservation check: [N] all preserved / [M] excluded due to word limit
 ```
 
 ---
 
-## 硬性规则
+## Hard rules
 
-1. **不编造数据**。适配版本中的数据必须来自核心稿。
-2. **不改变核心判断**。可以简化，不能改变结论。
-3. **产品名称一致**。所有版本使用brand-rules.md中的正式名称。
-4. **客户脱敏延续**。核心稿中脱敏的在所有版本中保持脱敏。
-5. **不跨稿引用**。只使用当前核心稿中的信息。
-6. **英文质量**。宁可简短准确，不要冗长生硬。不确定的标注[需确认]。
+1. **Don't fabricate data.** Data in adapted versions must come from the core draft.
+2. **Don't change the core judgment.** Simplify yes, change conclusions no.
+3. **Consistent product names.** All versions use the official names in `brand-rules.md`.
+4. **Carry through customer redaction.** Redacted in the core draft stays redacted in all versions.
+5. **Don't cross-reference other drafts.** Use only information from the current core draft.
+6. **English quality.** Prefer short and accurate over verbose and stiff. Mark uncertain parts [needs confirmation].
 
-## 失败处理
+## Failure handling
 
-| 场景 | 处理 |
-|------|------|
-| 核心稿字数<500 | 提示"内容过少，建议先补充" |
-| 核心稿无数据点 | 标注"无硬数据，建议以观点角度发布" |
-| 核心稿含未脱敏客户名 | 自动脱敏并告警 |
-| 渠道规范文件不存在 | 使用通用格式生成 |
+| Scenario | Handling |
+|----------|----------|
+| Core draft under 500 words | prompt "too little content, suggest supplementing first" |
+| Core draft has no data points | mark "no hard data, suggest publishing from an opinion angle" |
+| Core draft contains unredacted customer name | auto-redact and warn |
+| Channel-spec file missing | generate with a generic format |
 
-## ⚠️ 人工介入
+## ⚠️ Human-in-the-loop
 
-- 模式A：公众号版和LinkedIn版进入L1-L2审批后发布
-- 模式B：社交帖进入L1轻审后发布
-- 英文版如标注[需确认]，需人工校对后发布
+- Mode A: official-account and LinkedIn versions go through L1-L2 approval before publishing
+- Mode B: social posts go through L1 light review before publishing
+- English versions marked [needs confirmation] need human proofreading before publishing
+
+---
+
+## 中文摘要
+
+Content Adapter 把已审核的核心稿（或已发布文章）适配为各渠道发布版本，不负责从零创作。支持公众号版、开发者社区版、中文社交帖、英文 X 帖、LinkedIn 摘要、销售一页纸，以及存量内容二次推广物料。硬性规则：不编造数据、不改变核心判断、产品名一致、客户脱敏延续、跨稿不互引、英文宁可简短准确。
