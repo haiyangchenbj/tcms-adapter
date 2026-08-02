@@ -1,6 +1,6 @@
 ---
 name: tcms-adapter
-version: "1.1.0"
+version: "1.1.1"
 description: |
   Channel-adaptation agent. Adapts a reviewed core draft into channel-specific publish-ready versions.
   Supports: official-account version, developer-community version, Chinese social post, English X post, LinkedIn summary, sales one-pager.
@@ -21,6 +21,18 @@ allowed-tools:
   - write_to_file
   - replace_in_file
   - web_fetch
+metadata:
+  openclaw:
+    tags:
+      - content-marketing
+      - communication
+      - channel-marketing
+      - social-media
+      - linkedin
+      - wechat
+      - repurposing
+      - tech-product
+      - b2b
 disable: false
 ---
 
