@@ -1,10 +1,19 @@
 ---
+slug: tcms-adapter
+displayName: Tcms Adapter
 name: tcms-adapter
-version: "1.1.1"
+version: "1.1.5"
+not_for:
+  - Writing the core draft from scratch (adapts an existing reviewed draft)
+  - Unreviewed or unapproved drafts as input (review must happen upstream)
+  - Direct publishing or channel operations (produces ready-to-publish versions only)
+  - Full translation projects (channel adaptation, not document translation)
 description: |
   Channel-adaptation agent. Adapts a reviewed core draft into channel-specific publish-ready versions.
   Supports: official-account version, developer-community version, Chinese social post, English X post, LinkedIn summary, sales one-pager.
   Also generates re-promotion material for existing content.
+description_zh: "渠道适配器：将已审核心稿适配为各渠道可发版本（公众号版、开发者社区版、中文社媒、英文 X、LinkedIn 摘要、销售一页纸），并为已有内容生成再推广素材。"
+
 read_when:
   - 适配
   - 改写
