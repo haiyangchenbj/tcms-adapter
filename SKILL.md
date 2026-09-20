@@ -2,7 +2,7 @@
 slug: tcms-adapter
 displayName: Tcms Adapter
 name: tcms-adapter
-version: "1.1.5"
+version: "1.1.6"
 not_for:
   - Writing the core draft from scratch (adapts an existing reviewed draft)
   - Unreviewed or unapproved drafts as input (review must happen upstream)
