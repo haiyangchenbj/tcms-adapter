@@ -2,7 +2,7 @@
 slug: tcms-adapter
 displayName: Tcms Adapter
 name: tcms-adapter
-version: "1.1.7"""
+version: "1.1.8"
 not_for:
   - Writing the core draft from scratch (adapts an existing reviewed draft)
   - Unreviewed or unapproved drafts as input (review must happen upstream)
@@ -74,7 +74,7 @@ Mode B steps:
 2. Confirm the list of channels to adapt to
 3. Read the core-draft content
 
-When no channel is specified, default to the full set: official-account version / community version / Chinese social post ×2 / English X post ×1 / sales one-pager (only when case or hard data is present)
+When no channel is specified, default to the full set: official-account version / community version / Chinese social post ×2 / English X post ×1 / LinkedIn summary (if needed) / sales one-pager (only when case or hard data is present)
 
 ## Step 2: Read channel specs [deterministic]
 
