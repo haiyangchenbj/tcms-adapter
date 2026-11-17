@@ -2,7 +2,7 @@
 slug: tcms-adapter
 displayName: Tcms Adapter
 name: tcms-adapter
-version: "1.1.8"
+version: "1.1.9"
 not_for:
   - Writing the core draft from scratch (adapts an existing reviewed draft)
   - Unreviewed or unapproved drafts as input (review must happen upstream)
@@ -134,9 +134,10 @@ content/adapted/
 ```
 
 Execution summary:
-```
-6. **Verify hard limits by count, not estimate.** Platform limits (character caps, image counts) are confirmed by actual length or count after generation, never by judgment.
 
+> **Verify hard limits by count, not estimate.** Platform limits (character caps, image counts) are confirmed by actual length or count after generation, never by judgment.
+
+```markdown
 ## Execution summary
 - Core draft: [filename] ([word count] words)
 - Generated: official-account ([words]) / Chinese social ×2 / English X ×1 / ...
